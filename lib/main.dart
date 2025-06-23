@@ -5,10 +5,11 @@ import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:odc_mobile_template/business/services/user/userNetworkService.dart';
 import 'package:odc_mobile_template/framework/utils/localStorage/getStorageImpl.dart';
+import 'package:odc_mobile_template/pages/auth/loginPage.dart';
 import 'package:odc_mobile_template/utils/navigationUtils.dart';
 import 'business/services/gestion/gestionLocalService.dart';
 import 'business/services/gestion/gestionNetworkService.dart';
-import 'MonApplication.dart';
+// import 'MonApplication.dart';
 import 'business/services/user/userLocalService.dart';
 import 'framework/gestion/gestionNetworkServiceImpl.dart';
 import 'framework/gestion/gestionLocalServiceImpl.dart';
@@ -44,5 +45,25 @@ void main() async {
   // configuration des Implementations
   configureImplementations();
 
-  runApp(ProviderScope(child: MonApplication()));
+  //runApp(ProviderScope(child: MonApplication()));
+
+  runApp(ProviderScope(child: MyApp() ));
+
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mon App Flutter',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const LoginPage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
