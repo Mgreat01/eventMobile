@@ -8,11 +8,10 @@ import '../../business/models/user/user.dart';
 
 import '../../business/services/user/userNetworkService.dart';
 import '../../utils/http/HttpUtils.dart';
-import '../utils/http/remoteHttpUtils.dart';
+// import '../utils/http/remoteHttpUtils.dart';
 
 
 
-import 'package:http/http.dart' as http;
 
 class UserNetworkServiceImpl extends UserNetworkService {
   final String baseUrl;
@@ -76,8 +75,40 @@ class UserNetworkServiceImpl extends UserNetworkService {
       throw Exception('Connexion échouée : ${e.toString()}');
     }
   }
+  
+  @override
+  Future<User> creerCompte(User user) { 
+
+
+    }
+  
+  @override
+  Future<User> seDeconnecter() {
+    // TODO: implement seDeconnecter
+    throw UnimplementedError();
+  }
 }
 
 
 
 
+
+/*
+void main() async {
+  final userService = UserNetworkServiceImpl(
+   // baseUrl: 'http://10.252.252.55:8000/api',
+    // baseUrl: 'http://10.252.252.24:8000/api',
+   // baseUrl: 'http://localhost:8000/api',
+   baseUrl:'http://10.0.2.2:8000',
+    httpUtils: RemoteHttpUtils(),
+  );
+
+  try {
+    final auth = Authentication(email: 'ephraimmnga40000@gmail.com', password: 'crpo jupt juwm zbvq');
+    final user = await userService.seConnecter(auth);
+    print(' Connexion réussie! Utilisateur: ${user.toJson()}');
+  } catch (e) {
+    print(' Erreur de connexion: $e');
+  }
+}
+*/
