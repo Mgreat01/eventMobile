@@ -3,15 +3,17 @@ import 'dart:convert';
 
 import '../../business/models/user/authentication.dart';
 
+import '../../business/models/user/interet.dart';
 import '../../business/models/user/loginReponse.dart';
 import '../../business/models/user/user.dart';
 
 import '../../business/services/user/userNetworkService.dart';
 import '../../utils/http/HttpUtils.dart';
-// import '../utils/http/remoteHttpUtils.dart';
+import '../utils/http/remoteHttpUtils.dart';
 
 
 
+import 'package:http/http.dart' as http;
 
 class UserNetworkServiceImpl extends UserNetworkService {
   final String baseUrl;
@@ -75,40 +77,108 @@ class UserNetworkServiceImpl extends UserNetworkService {
       throw Exception('Connexion échouée : ${e.toString()}');
     }
   }
-  
+
+
   @override
-  Future<User> creerCompte(User user) { 
+  Future<User> creerCompte(User user) async {
+    final url = '$baseUrl/register';
+    final req = user.toJson();
 
+    print('Données d\'inscription envoyées : $req');
 
+    try {
+      final String responseBody = await httpUtils.postData(
+        url,
+        body: req,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      final decodedJson = jsonDecode(responseBody);
+
+      if (decodedJson['error'] != null) {
+        throw Exception(decodedJson['message'] ?? 'Erreur lors de l\'inscription');
+      }
+
+      final loginResponse = LoginResponse.fromJson(decodedJson);
+      print('Compte créé avec succès : ${loginResponse.user.toJson()}');
+      return loginResponse.user;
+    } catch (e) {
+      print('Erreur création de compte : $e');
+      throw Exception('Échec de l\'inscription : ${e.toString()}');
     }
-  
+  }
+
   @override
   Future<User> seDeconnecter() {
     // TODO: implement seDeconnecter
     throw UnimplementedError();
   }
-}
 
+  @override
+  Future<List<Interet>> getInterets() async {
+    final url = '$baseUrl/interet';
 
+    try {
+      final responseBody = await httpUtils.getData(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
 
-
-
-/*
-void main() async {
-  final userService = UserNetworkServiceImpl(
-   // baseUrl: 'http://10.252.252.55:8000/api',
-    // baseUrl: 'http://10.252.252.24:8000/api',
-   // baseUrl: 'http://localhost:8000/api',
-   baseUrl:'http://10.0.2.2:8000',
-    httpUtils: RemoteHttpUtils(),
-  );
-
-  try {
-    final auth = Authentication(email: 'ephraimmnga40000@gmail.com', password: 'crpo jupt juwm zbvq');
-    final user = await userService.seConnecter(auth);
-    print(' Connexion réussie! Utilisateur: ${user.toJson()}');
-  } catch (e) {
-    print(' Erreur de connexion: $e');
+      final decodedJson = jsonDecode(responseBody);
+      if (decodedJson is List) {
+        return decodedJson.map((e) => Interet.fromJson(e)).toList();
+      } else {
+        throw Exception('Réponse inattendue du serveur');
+      }
+    } catch (e) {
+      print('Erreur lors du chargement des centres d’intérêt : $e');
+      throw Exception('Impossible de charger les centres d’intérêt');
+    }
   }
+
+  @override
+  Future<bool> verifierOtp({required String email, required String otp}) async {
+    final url = '$baseUrl/verify-otp';
+    final body = {
+      'email': email,
+      'otp': otp,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      // ✅ Vérifie simplement si le code HTTP est 200 (succès)
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        print('Vérification réussie : ${decoded['message']}');
+        return true;
+      } else {
+        final decoded = jsonDecode(response.body);
+        print('Erreur OTP : ${decoded['message']}');
+        return false;
+      }
+    } catch (e) {
+      print('Erreur lors de la vérification OTP : $e');
+      return false;
+    }
+  }
+
+
 }
-*/
+
+
+
+
