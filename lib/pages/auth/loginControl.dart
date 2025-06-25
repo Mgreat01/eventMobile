@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../business/models/user/authentication.dart';
 import '../../business/services/user/userLocalService.dart';
 import '../../business/services/user/userNetworkService.dart';
-import '../../main.dart'; // pour accéder à getIt
+import '../../main.dart';
 import 'loginState.dart';
 
 class LoginControl extends StateNotifier<LoginState> {
