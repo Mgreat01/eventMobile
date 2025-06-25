@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:odc_mobile_template/MonApplication.dart';
+import 'package:odc_mobile_template/pages/register/registerPage.dart';
 
 import 'loginControl.dart';
 
@@ -21,7 +22,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void initState() {
     super.initState();
     _tryAutoLogin();
+
+
+    _emailController.addListener(_clearError);
+    _passwordController.addListener(_clearError);
   }
+
+  void _clearError() {
+    final notifier = ref.read(loginControlProvider.notifier);
+    if (ref.read(loginControlProvider).errorMsg != null) {
+      notifier.state = notifier.state.copyWith(errorMsg: null);
+      setState(() {});
+    }
+  }
+
 
   Future<void> _tryAutoLogin() async {
     final success = await ref.read(loginControlProvider.notifier).tryAutoLogin();
@@ -82,9 +96,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
               ),
               const SizedBox(height: 40),
-              // Sous-titre
 
-              const SizedBox(height: 24),
               // Section de connexion
               Text(
                 'Connectez-vous',
@@ -100,6 +112,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
               ),
               const SizedBox(height: 24),
+
+              // 🔁 AJOUT : affichage du message d’erreur
+              if (state.errorMsg != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: Center(
+                    child: Text(
+                      state.errorMsg!,
+                      style: const TextStyle(color: Colors.red, fontSize: 14),
+                    ),
+                  ),
+                ),
+
               // Formulaire
               Form(
                 key: _formKey,
@@ -127,9 +152,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 16),
+
                     // Champ mot de passe
                     TextFormField(
                       controller: _passwordController,
+                      onChanged: (_) => _clearError(),
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         labelText: 'Mot de passe',
@@ -162,6 +189,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 16),
+
                     // Se souvenir de moi + mot de passe oublié
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,10 +223,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
+
+                    // Bouton de connexion
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        //  Désactivé uniquement si l'utilisateur a cliqué (pas auto-login)
                         onPressed: (state.isLoading && !state.isAutoLoginLoading)
                             ? null
                             : () async {
@@ -213,8 +242,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) =>
-                                    const MonApplication()),
+                                  builder: (_) => const MonApplication(),
+                                ),
                               );
                             }
                           }
@@ -226,7 +255,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        //  Affichage du spinner uniquement si ce n'est pas l'auto-login
                         child: (state.isLoading && !state.isAutoLoginLoading)
                             ? const CircularProgressIndicator(color: Colors.white)
                             : const Text(
@@ -236,6 +264,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
+
                     // Séparateur
                     Row(
                       children: [
@@ -253,6 +282,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
+
                     // Bouton Google
                     SizedBox(
                       width: double.infinity,
@@ -260,11 +290,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         onPressed: () {
                           // TODO: Implémenter la connexion Google
                         },
-                          /*
-                        icon: Image.asset(
-                          'assets/google.png',
-                          height: 24,
-                        ),*/
                         label: const Text('Continuer avec Google'),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -276,12 +301,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
+
                     // Lien vers l'inscription
                     Center(
                       child: TextButton(
-                        onPressed: () {
-                          // Navigator.pushNamed(context, '/register');
-                        },
+                        onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const RegisterPage()),
+                        ),
                         child: RichText(
                           text: TextSpan(
                             text: 'Pas encore de compte ? ',
