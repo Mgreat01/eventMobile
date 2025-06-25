@@ -2,14 +2,14 @@ import '../../business/models/user/user.dart';
 
 class LoginState {
   final bool isLoading;
-  final bool isAutoLoginLoading; 
+  final bool isAutoLoginLoading;
   final String? errorMsg;
   final User? user;
   final bool rememberMe;
 
   LoginState({
     this.isLoading = false,
-    this.isAutoLoginLoading = false, 
+    this.isAutoLoginLoading = false,
     this.errorMsg,
     this.user,
     this.rememberMe = false,
@@ -17,7 +17,7 @@ class LoginState {
 
   LoginState copyWith({
     bool? isLoading,
-    bool? isAutoLoginLoading, 
+    bool? isAutoLoginLoading,
     String? errorMsg,
     User? user,
     bool? rememberMe,
