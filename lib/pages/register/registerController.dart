@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:odc_mobile_template/business/models/user/user.dart';
 import 'package:odc_mobile_template/business/models/user/interet.dart';
+import 'package:odc_mobile_template/business/models/user/registerRequest.dart';
 import 'package:odc_mobile_template/business/services/user/userLocalService.dart';
 import 'package:odc_mobile_template/business/services/user/userNetworkService.dart';
 import 'package:odc_mobile_template/pages/register/registerState.dart';
@@ -28,7 +29,7 @@ class RegisterControl extends StateNotifier<RegisterState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final user = User(
+      final registerRequest = RegisterRequest(
         name: name,
         email: email,
         password: password,
@@ -38,7 +39,7 @@ class RegisterControl extends StateNotifier<RegisterState> {
         interets: interests,
       );
 
-      final createdUser = await _networkService.creerCompte(user);
+      final createdUser = await _networkService.creerCompte(registerRequest);
       await _localService.sauvegarderUser(createdUser);
 
       state = state.copyWith(isLoading: false, user: createdUser);
