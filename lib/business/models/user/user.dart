@@ -1,31 +1,28 @@
 
+
 class User {
   int? id;
   String? name;
   String? email;
-  String? password;
-  String? passwordConfirmation; // ✅ Ajouté
   String? role;
 
-  // Spécifique à l’organisateur
+  // Spécifique à l'organisateur
   String? nomOrganis;
 
   // Spécifique au public
   List<int>? interets;
 
-  // Token d’authentification
+  // Optionnel : token d'authentification
   String? token;
 
   User({
     this.id,
     this.name,
     this.email,
-    this.password,
-    this.passwordConfirmation, // ✅ Ajouté
     this.role,
     this.nomOrganis,
     this.interets,
-    this.token,
+    this.token
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -47,8 +44,6 @@ class User {
     final Map<String, dynamic> data = {
       'name': name,
       'email': email,
-      'password': password,
-      'password_confirmation': passwordConfirmation, // ✅ Ajouté ici
       'role': role,
     };
 
