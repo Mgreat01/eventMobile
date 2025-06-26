@@ -87,21 +87,7 @@ class User {
     this.interets,
     this.token,
   });
-/*
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'] as int?,
-      name: json['name'] as String?,
-      email: json['email'] as String?,
-      role: json['role'] as String?,
-      nomOrganis: json['nom_organis'] as String?,
-      interets: json['interets'] != null
-          ? List<int>.from(json['interets'])
-          : null,
-      token: json['token'] as String?,
-    );
-  }
-*/
+
   factory User.fromJson(Map<String, dynamic> json) {
     final Map<String, dynamic> map = Map<String, dynamic>.from(json);
     return User(
