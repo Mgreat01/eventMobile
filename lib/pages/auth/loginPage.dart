@@ -305,10 +305,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     // Lien vers l'inscription
                     Center(
                       child: TextButton(
-                        onPressed: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => const RegisterPage()),
-                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => RegisterPage(),
+                            ),
+                          );
+                        },
+
                         child: RichText(
                           text: TextSpan(
                             text: 'Pas encore de compte ? ',
